@@ -192,18 +192,25 @@ func (c *Controller) genWorkDirAndPVAndMounts(container, storageClass string, ig
 		// Check if pvc is already exist
 		labels := map[string]string{}
 		if duplicateDevMode {
-			labels = c.getDuplicateLabelsMap()
-			labels[_const.DevWorkloadIgnored] = "false"
-			labels[_const.AppLabel] = c.AppName
-			labels[_const.ServiceLabel] = c.Name
+			//labels = c.getDuplicateLabelsMap()
+			//labels[_const.DevWorkloadIgnored] = "false"
+			//labels[_const.AppLabel] = c.AppName
+			//labels[_const.ServiceLabel] = c.Name
 			labels[_const.ServiceTypeLabel] = string(c.Type)
 		} else {
-			labels[_const.AppLabel] = c.AppName
-			labels[_const.ServiceLabel] = c.Name
+			//labels[_const.AppLabel] = c.AppName
+			//labels[_const.ServiceLabel] = c.Name
 			labels[_const.ServiceTypeLabel] = string(c.Type)
 		}
 		labels[_const.PersistentVolumeDirLabel] = utils.Sha1ToString(persistentVolume.Path)
 		claims, err := c.Client.GetPvcByLabels(labels)
+		for key, value := range labels {
+			log.Infof(
+				fmt.Sprintf(
+					"label: %s ==> %s ", key, value,
+				),
+			)
+		}
 		if err != nil {
 			log.WarnE(err, fmt.Sprintf("Fail to get a pvc for %s", persistentVolume.Path))
 			continue
